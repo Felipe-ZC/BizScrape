@@ -5,14 +5,6 @@ import requests
 '''
 For search.sunbiz.org
 
-Mechanize Link obj:
-    absolute_url – The absolutized link URL 
-    url – The link URL 
-    base_url – The base URL against which this link is resolved 
-    text – The link text
-    tag – The link tag name 
-    attrs – The tag attributes
-
 TODO: Match regex from user input to the link object's url field. 
 
 TODO: Prep user input to match search.sunbiz.org's format. 
@@ -28,29 +20,31 @@ TODO: Input validation!!!!
 TODO: CLI (Command line interface)
 '''
 
-#browser = mechanize.Browser()
-# browser.open('http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder=SPECTRUMETRX&searchTerm=SpecTruMetRx%2C%20Inc')
-#browser.open('http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder=SPECTRUM&searchTerm=spectrum')
-#links = browser.links()
-
-#print('Response: ', links)
-
-# for link in links:
-    # print ('Link text field: ', link.text)
-
 # Using requests
 searchQuery = input('Search sunbiz.org: ')
+formattedInput = searchQuery.upper()
+#print(formattedInput)
+
+# f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
 link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={searchQuery.upper()}&searchTerm={searchQuery}'
 html = requests.get(link).text
+#print('html: ', html)
 
 '''
-Use a regex to get all anchor tags on the page (html).
+Use a regex to get all tr tags on the page (html).
 Most of the anchor tags on the html page are the results to searchQuery, with some exceptions.
+Using two flags:
+    - M (multiline)
+    - S makes the dot character (.) match any character including newlines.
 '''
 
-anchors = re.findall('\<a.*\>.*\/a>', html, re.M) 
+#tableRows = re.findall('\<tr\>.*\/tr\>', html, re.S)
+tableRows = re.findall('\<td.*\>', html)
+print(f'Found {len(tableRows)/3} results for {searchQuery}')
 
-print('HTML: ', html)
-print('Anchors: ', anchors)
-print('html type: ', type(html))
-print('Search query: ', searchQuery)
+for index, row in enumerate(tableRows):
+    if(re.search(formattedInput, row)):
+        print('Found a match for: ', searchQuery)
+        print('Match: ', row)
+
+    
