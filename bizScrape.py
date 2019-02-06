@@ -1,5 +1,4 @@
 import re
-import mechanize
 import requests
 
 '''
@@ -42,9 +41,29 @@ Using two flags:
 tableRows = re.findall('\<td.*\>', html)
 print(f'Found {len(tableRows)/3} results for {searchQuery}')
 
+'''
+Look for a match in each <td> element, if a match is found on index i
+then the <td> element that describes the business' status is found on 
+index i + 2. 
+
+This is a pretty basic approach to the problem but most of this is hacked
+af, needs review!
+'''
+print('searching for: ', searchQuery)
+matches = [] # Holds all matches found, with their index...
+
 for index, row in enumerate(tableRows):
-    if(re.search(formattedInput, row)):
+    if(re.search(searchQuery, row, re.I)):
         print('Found a match for: ', searchQuery)
-        print('Match: ', row)
+        # TODO: Check for out of bounds you dick!
+        isActive = re.search('Active', tableRows[index + 2]);
+        matches.append((row, isActive))
+
+print(f'Matches found for {searchQuery}: {matches}')
+
+'''
+Return a list of results, let user
+choose from list in frontend.
+'''
 
     
