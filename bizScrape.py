@@ -27,7 +27,8 @@ def searchSunBiz(searchQuery):
     # f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
     link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={searchQuery.upper()}&searchTerm={searchQuery}'
     html = requests.get(link).text
-    tableRows = re.findall('\<td.*', html)
+    tableRows = re.findall('\<td.*', html) 
+    parsed = [] # Holds all matches found, with their index...
 
     '''
     Look for a match in each <td> element, if a match is found on index i
@@ -37,8 +38,6 @@ def searchSunBiz(searchQuery):
     This is a pretty basic approach to the problem but most of this is hacked
     af, needs review!
     '''
-    parsed = [] # Holds all matches found, with their index...
-
     for index, row in enumerate(tableRows):
         if(re.search(formattedInput, row, re.I)):
              # TODO: Check for out of bounds you dick!
