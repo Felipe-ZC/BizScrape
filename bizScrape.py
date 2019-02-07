@@ -24,6 +24,7 @@ def searchSunBiz(searchQuery):
     formattedInput = searchQuery.split(' ')
     formattedInput = list(map(lambda x: re.escape(x), formattedInput))
     formattedInput = r"|".join(formattedInput)
+    #print( formattedInput)
 
     # f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
     link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={searchQuery.upper()}&searchTerm={searchQuery}'
@@ -40,12 +41,15 @@ def searchSunBiz(searchQuery):
     af, needs review!
     '''
     for index, row in enumerate(tableRows):
+        # TODO: Revise this regex, maybe use the same strategy 
+        # as in the regex for companyName.
         if(re.search(formattedInput, row, re.I)):
              # TODO: Check for out of bounds you dick!
             isActive = re.search('Active', tableRows[index + 2]);
             companyName = re.search('\>[a-zA-Z0-9., ]+\<', row)
             # Save only active businesses
             if(companyName and isActive):
+                print(row)
                 formattedName = re.sub('<|>', '', companyName.group(0))
                 parsed.append(formattedName)
 
