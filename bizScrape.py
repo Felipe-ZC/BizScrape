@@ -19,43 +19,52 @@ Using two flags:
     - M (multiline)
     - S makes the dot character (.) match any character including newlines.
 '''
+def searchSunBiz(searchQuery):
+    formattedInput = searchQuery.split(' ')
+    formattedInput = list(map(lambda x: re.escape(x), formattedInput))
+    formattedInput = r"|".join(formattedInput)
 
-# Using requests
-searchQuery = input('Search sunbiz.org: ')
+    # f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
+    link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={searchQuery.upper()}&searchTerm={searchQuery}'
+    html = requests.get(link).text
+    tableRows = re.findall('\<td.*', html)
 
-# f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
-link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={searchQuery.upper()}&searchTerm={searchQuery}'
-html = requests.get(link).text
+    '''
+    Look for a match in each <td> element, if a match is found on index i
+    then the <td> element that describes the business' status is found on 
+    index i + 2. 
 
-tableRows = re.findall('\<td.*', html)
+    This is a pretty basic approach to the problem but most of this is hacked
+    af, needs review!
+    '''
+    parsed = [] # Holds all matches found, with their index...
 
-'''
-Look for a match in each <td> element, if a match is found on index i
-then the <td> element that describes the business' status is found on 
-index i + 2. 
+    for index, row in enumerate(tableRows):
+        if(re.search(formattedInput, row, re.I)):
+             # TODO: Check for out of bounds you dick!
+            isActive = re.search('Active', tableRows[index + 2]);
+            companyName = re.search('\>[a-zA-Z0-9., ]+\<', row)
+            # Collect active businesses
+            if(companyName and isActive):
+                formattedName = re.sub('<|>', '', companyName.group(0))
+                parsed.append(formattedName)
 
-This is a pretty basic approach to the problem but most of this is hacked
-af, needs review!
-'''
-parsed = [] # Holds all matches found, with their index...
+    return parsed
 
-for index, row in enumerate(tableRows):
-    if(re.search(searchQuery, row, re.I)):
-        # TODO: Check for out of bounds you dick!
-        isActive = re.search('Active', tableRows[index + 2]);
-        companyName = re.search('\>[a-zA-Z0-9., ]+\<', row)
-        # Collect active businesses
-        if(companyName and isActive):
-            formattedName = re.sub('<|>', '', companyName.group(0))
-            parsed.append((formattedName, isActive.group(0)))
-
-
-print(f'Found {len(parsed)} active businesses registered under the name {searchQuery}')
-print(parsed)
 
 '''
 Return a list of results, let user
 choose from list in frontend.
 '''
 
-    
+def main():
+    searchQuery = input('Search sunbiz.org: ')
+    result = searchSunBiz(searchQuery) 
+    print(f'Found {len(result)} active businesses registered while searching for {searchQuery}')
+    print(result)
+    return result;
+
+# this means that if this script is executed, then 
+# main() will be executed
+if __name__ == '__main__':
+    main()
