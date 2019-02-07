@@ -51,20 +51,19 @@ def searchSunBiz(searchQuery):
 
     return parsed
 
-
 '''
 Return a list of results, let user
 choose from list in frontend.
 '''
-
+#TODO: Return resulting list as JSON!!!!! (Come on bro...)
 def main():
     searchQuery = input('Search sunbiz.org: ')
-    result = searchSunBiz(searchQuery) 
+    result = searchSunBiz(searchQuery)
+
     print(f'Found {len(result)} active businesses registered while searching for {searchQuery}')
     print(result)
+
     return result;
 
-# this means that if this script is executed, then 
-# main() will be executed
 if __name__ == '__main__':
     main()
