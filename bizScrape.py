@@ -4,12 +4,7 @@ import json
 import argparse
 
 '''
-For search.sunbiz.org
-
 TODO: Input validation!!!!
-
-TODO: CLI (Command line interface)
-
 '''
 
 '''
