@@ -1,6 +1,7 @@
 import re
 import requests
 import json
+import argparse
 
 '''
 For search.sunbiz.org
@@ -9,8 +10,6 @@ TODO: Input validation!!!!
 
 TODO: CLI (Command line interface)
 
-TODO: Encapsulate code into module or whatever python uses to package and
-prepare for depolyment.
 '''
 
 '''
@@ -44,12 +43,11 @@ def searchSunBiz(searchQuery):
         # TODO: Revise this regex, maybe use the same strategy 
         # as in the regex for companyName.
         if(re.search(formattedInput, row, re.I)):
-             # TODO: Check for out of bounds you dick!
+             # TODO: Check for out of bounds youo dick!
             isActive = re.search('Active', tableRows[index + 2]);
             companyName = re.search('\>[a-zA-Z0-9., ]+\<', row)
             # Save only active businesses
             if(companyName and isActive):
-                print(row)
                 formattedName = re.sub('<|>', '', companyName.group(0))
                 parsed.append(formattedName)
 
@@ -59,9 +57,7 @@ def searchSunBiz(searchQuery):
 Return a list of results, let user
 choose from list in frontend.
 '''
-#TODO: Return resulting list as JSON!!!!! (Come on bro...)
-def main():
-    searchQuery = input('Search sunbiz.org: ')
+def main(searchQuery):
     results = searchSunBiz(searchQuery)
     
     # Output results
@@ -77,4 +73,8 @@ def main():
 
 # Main module    
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("businessName")
+    args = parser.parse_args()
+    print("command line args: ", args.businessName)
+    main(args.businessName)
