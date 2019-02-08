@@ -1,3 +1,10 @@
+'''
+Author: Felipe Zuniga Calier (Felipe-ZC)  
+
+A python script that scrapes the HTML on search.sunbiz.org to determine if a
+given business (in Florida) is an active business entity. 
+'''
+
 import re
 import requests
 import json
@@ -5,6 +12,11 @@ import argparse
 
 '''
 TODO: Input validation!!!!
+
+TODO: Add an option to retrieve inactive businesses.
+
+TODO: Use mechanize to perform a deeper search, the most relevant results are
+shown on the first page I'd like to give the user the option. 
 '''
 
 '''
