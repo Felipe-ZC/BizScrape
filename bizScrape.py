@@ -16,7 +16,12 @@ TODO: Input validation!!!!
 TODO: Add an option to retrieve inactive businesses.
 
 TODO: Use mechanize to perform a deeper search, the most relevant results are
-shown on the first page I'd like to give the user the option. 
+shown on the first page I'd like to give the user the option.
+
+TODO: Add a verbose option, combine this with mechanize. If the verbose option 
+is true, then the program will retrieve all active and/or inactive businesses
+along with detailed information about the company. This detailed information
+is found on sunbiz.
 '''
 
 '''
