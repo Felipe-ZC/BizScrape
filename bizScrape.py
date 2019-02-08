@@ -57,24 +57,27 @@ def searchSunBiz(searchQuery):
 Return a list of results, let user
 choose from list in frontend.
 '''
-def main(searchQuery):
-    results = searchSunBiz(searchQuery)
+def main(args):
+    results = searchSunBiz(args.businessName)
     
     # Output results
-    print(f'Found {len(results)} active businesses while searching for {searchQuery}')
-    print("--------- Results ---------")
-
-    for result in results:
-        print(result)
+    if(args.json):
+        print(json.dumps({'data' : results}, sort_keys=True,
+                        indent=4, separators=(',', ': ')))
+    else:
+        print(f'Found {len(results)} active businesses while searching for {args.businessName}')
+        print("--------- Results ---------")
+        for result in results:
+            print(result)
     
     # Return results as JSON
     return json.dumps({'data' : results}, sort_keys=True,
                         indent=None, separators=(',', ': '))
 
-# Main module    
+# Parse command line arguments and search sunbiz.org    
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("businessName")
+    parser = argparse.ArgumentParser(description='Searches for an active business entity on search.sunbiz.org by \'scraping\' the website.')
+    parser.add_argument("businessName", help='The name of the business to search for.') 
+    parser.add_argument("-j", "--json",  help='Print results in JSON', action='store_true')
     args = parser.parse_args()
-    print("command line args: ", args.businessName)
-    main(args.businessName)
+    main(args)
