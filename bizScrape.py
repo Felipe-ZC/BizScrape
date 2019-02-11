@@ -5,29 +5,11 @@ A python script that scrapes the HTML on search.sunbiz.org to determine if a
 given business (in Florida) is an active business entity. 
 '''
 
-'''
-TODO: Input validation!!!!
-
-TODO: Add an option to retrieve inactive businesses.
-
-TODO: Use mechanize to perform a deeper search, the most relevant results are
-shown on the first page I'd like to give the user the option.
-
-TODO: Add a verbose option, combine this with mechanize. If the verbose option 
-is true, then the program will retrieve all active and/or inactive businesses
-along with detailed information about the company. This detailed information
-is found on sunbiz.
-
-TODO: Add option to return data as python list.
-'''
-
 import re
 import requests
 import json
 import argparse
 from bs4 import BeautifulSoup
-from lxml import etree
-from io import StringIO, BytesIO
 
 '''
 DO NOT USE REGEX TO PARSE HTML!!!!
@@ -70,12 +52,9 @@ def searchSunBiz(searchQuery):
 '''
 Return a list of results, let user
 choose from list in frontend.
-a
 '''
 def main(args):
     results = searchSunBiz(args.businessName)
-
-    #print(results)
     
     # Output results
     if(args.json):
