@@ -56,22 +56,16 @@ def searchSunBiz(searchQuery):
     af, needs review!
     '''
     # Find all active business entities...
-    # TODO: Use variables for readability...
+    # TODO: MAKE THIS READABLE!!!! WTF!!!!
     # TODO: Decompose into functions...
     for index, tag in enumerate(parsedTags):
-        #print(tag)
-        if(tag.find('a')):
-            textAsString = str(tag.find('a').string)
-            matched = re.match(formattedInput, textAsString, re.I)
-            if(matched):
-                # TODO: CHECK FOR OUT OF BOUNDS YOU DICK!
-                activeTag = parsedTags[index + 2]
-                if(re.match('Active', str(activeTag.string))):
-                    activeBusinesses.append(textAsString)
-                    print('Active match found: ', textAsString)
-                
-            
+        if(tag.find('a')): 
+            # TODO: CHECK FOR OUT OF BOUNDS YOU DICK!
+            if(re.match(formattedInput, str(tag.find('a').string), re.I) and re.match('Active', str(parsedTags[index + 2].string))):
+                activeBusinesses.append(tag.find('a').string)
+             
     return activeBusinesses
+
 
 '''
 Return a list of results, let user
@@ -81,26 +75,26 @@ a
 def main(args):
     results = searchSunBiz(args.businessName)
 
-    print(results)
+    #print(results)
     
     # Output results
-    # if(args.json):
-        # print(json.dumps({'data' : results}, sort_keys=True,
-                        # indent=4, separators=(',', ': ')))
-    # else:
-        # print(f'Found {len(results)} active businesses while searching for {args.businessName}')
-        # print("--------- Results ---------")
-        # for result in results:
-            # print(result)
+    if(args.json):
+        print(json.dumps({'data' : results}, sort_keys=True,
+                         indent=4, separators=(',', ': ')))
+    else:
+        print(f'Found {len(results)} active businesses while searching for {args.businessName}')
+        print("--------- Results ---------")
+        for result in results:
+            print(result)
     
-    # # Return results in JSON or as a python list
-    # return json.dumps({'data' : results}, sort_keys=True,
-    #                    indent=None, separators=(',', ': '))
+    # Return results in JSON or as a python list
+    return json.dumps({'data' : results}, sort_keys=True,
+                        indent=None, separators=(',', ': '))
 
 # Parse command line arguments and search sunbiz.org    
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Searches for an active business entity on search.sunbiz.org by \'scraping\' the website.')
     parser.add_argument("businessName", help='The name of the business to search for.') 
-    #parser.add_argument("-j", "--json",  help='Print results in JSON', action='store_true')
+    parser.add_argument("-j", "--json",  help='Print results in JSON', action='store_true')
     args = parser.parse_args()
     main(args)
