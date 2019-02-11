@@ -76,6 +76,7 @@ def searchSunBiz(searchQuery):
 '''
 Return a list of results, let user
 choose from list in frontend.
+a
 '''
 def main(args):
     results = searchSunBiz(args.businessName)
