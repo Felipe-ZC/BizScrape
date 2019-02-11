@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 '''
 Author: Felipe Zuniga Calier (Felipe-ZC)  
 
@@ -22,11 +23,12 @@ def searchSunBiz(searchQuery):
     formattedInput = list(map(lambda x: re.escape(x), formattedInput))
     formattedInput = r"|".join(formattedInput)
 
+
     # f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
     link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={searchQuery.upper()}&searchTerm={searchQuery}'
     html = requests.get(link).text
     soup = BeautifulSoup(html, 'html.parser')
-    parsedTags = soup.find_all('td')
+    tags = soup.find_all('td')
     activeBusinesses = []
  
     '''
@@ -40,10 +42,11 @@ def searchSunBiz(searchQuery):
     # Find all active business entities...
     # TODO: MAKE THIS READABLE!!!! WTF!!!!
     # TODO: Decompose into functions...
-    for index, tag in enumerate(parsedTags):
+    # TODO: Remove duplicate entries?
+    for index, tag in enumerate(tags):
         if(tag.find('a')): 
             # TODO: CHECK FOR OUT OF BOUNDS YOU DICK!
-            if(re.match(formattedInput, str(tag.find('a').string), re.I) and re.match('Active', str(parsedTags[index + 2].string))):
+            if(re.match(formattedInput, str(tag.find('a').string), re.I) and re.match('Active', str(tags[index + 2].string))):
                 activeBusinesses.append(tag.find('a').string)
              
     return activeBusinesses
