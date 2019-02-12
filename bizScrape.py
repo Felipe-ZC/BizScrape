@@ -18,13 +18,9 @@ from urllib.parse import quote
 # TODO: Command Line option to match results with searchQuery instead returning
 # all active businesses found?
 def searchSunBiz(searchQuery):
-    formattedInput = quote(searchQuery)
-    #formattedInput = searchQuery.split(' ')
-    #formattedInput = list(map(lambda x: re.escape(x), formattedInput))
-    #formattedInput = r"|".join(formattedInput)
-    #print(formattedInput)
 
     # f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
+    formattedInput = quote(searchQuery)
     link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={formattedInput.upper()}&searchTerm={formattedInput}'
     html = requests.get(link).text
     soup = BeautifulSoup(html, 'html.parser')
