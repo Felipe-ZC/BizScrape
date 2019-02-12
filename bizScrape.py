@@ -12,20 +12,20 @@ import requests
 import json
 import argparse
 from bs4 import BeautifulSoup
+from urllib.parse import quote
 
-'''
-DO NOT USE REGEX TO PARSE HTML!!!!
-TODO: Find a way to parse HTML without using regex...
-TODO: DISCUSS XML BOMBS WITH TEAM MEMBERS!
-lmao
-'''
+# TODO: XML Bombs
+# TODO: Command Line option to match results with searchQuery instead returning
+# all active businesses found?
 def searchSunBiz(searchQuery):
+    formattedInput = quote(searchQuery)
     #formattedInput = searchQuery.split(' ')
     #formattedInput = list(map(lambda x: re.escape(x), formattedInput))
     #formattedInput = r"|".join(formattedInput)
+    #print(formattedInput)
 
     # f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
-    link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={searchQuery.upper()}&searchTerm={searchQuery}'
+    link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={formattedInput.upper()}&searchTerm={formattedInput}'
     html = requests.get(link).text
     soup = BeautifulSoup(html, 'html.parser')
     tags = soup.find_all('td')
@@ -41,8 +41,6 @@ def searchSunBiz(searchQuery):
     '''
     # Find all active business entities...
     # TODO: MAKE THIS READABLE!!!! WTF!!!!
-    # TODO: Decompose into functions...
-    # TODO: Remove duplicate entries?
     for index, tag in enumerate(tags):
         if(tag.find('a')): 
             # TODO: CHECK FOR OUT OF BOUNDS YOU DICK!
