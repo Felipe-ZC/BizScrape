@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 '''
 Author: Felipe Zuniga Calier (Felipe-ZC)  
 
@@ -19,10 +20,9 @@ TODO: DISCUSS XML BOMBS WITH TEAM MEMBERS!
 lmao
 '''
 def searchSunBiz(searchQuery):
-    formattedInput = searchQuery.split(' ')
-    formattedInput = list(map(lambda x: re.escape(x), formattedInput))
-    formattedInput = r"|".join(formattedInput)
-
+    #formattedInput = searchQuery.split(' ')
+    #formattedInput = list(map(lambda x: re.escape(x), formattedInput))
+    #formattedInput = r"|".join(formattedInput)
 
     # f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
     link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={searchQuery.upper()}&searchTerm={searchQuery}'
@@ -46,7 +46,8 @@ def searchSunBiz(searchQuery):
     for index, tag in enumerate(tags):
         if(tag.find('a')): 
             # TODO: CHECK FOR OUT OF BOUNDS YOU DICK!
-            if(re.match(formattedInput, str(tag.find('a').string), re.I) and re.match('Active', str(tags[index + 2].string))):
+            #if(re.match(formattedInput, str(tag.find('a').string), re.I) and re.match('Active', str(tags[index + 2].string))):
+            if(re.match('Active', str(tags[index + 2].string))):
                 activeBusinesses.append(tag.find('a').string)
              
     return activeBusinesses
