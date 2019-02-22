@@ -11,6 +11,7 @@ MAX_SIZE = 5
 #TODO MUST BE REFACTORED!
 #TODO DON'T turn this in without refactoring! 
 #TODO Merge with Florida search
+
 def searchState(searchQuery):
     
     browser = mechanize.Browser()
@@ -32,6 +33,7 @@ def searchState(searchQuery):
         #NOTE: len() on a list is an O(1) operation... 
         if(len(activeBusinesses) < MAX_SIZE and re.search('Active', tagString, re.I)):
             activeBusinesses.append(tags[index + 1]['data-order'])
+
             #print(tags[index + 1]['data-order'])
                  
     return activeBusinesses
