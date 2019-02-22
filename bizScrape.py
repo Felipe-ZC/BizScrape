@@ -1,67 +1,77 @@
 #!/usr/bin/env python3
 
-import mechanize
-import argparse
+'''
+Author: Felipe Zuniga Calier (Felipe-ZC)  
+
+A python script that scrapes the HTML on search.sunbiz.org to determine if a
+given business (in Florida) is an active business entity. 
+'''
+
 import re
+import requests
 import json
-from urllib.parse import quote
+import argparse
 from bs4 import BeautifulSoup
+from urllib.parse import quote
 
-MAX_SIZE = 5
-#TODO MUST BE REFACTORED!
-#TODO DON'T turn this in without refactoring! 
-#TODO Merge with Florida search
+# TODO: XML Bombs
+# TODO: Command Line option to match results with searchQuery instead returning
+# all active businesses found?
+def searchSunBiz(searchQuery):
 
-def searchState(searchQuery):
-    
-    browser = mechanize.Browser()
+    # f strings are a new construct introduced in python 3.6, allows for string interpolation like in Node and other languages.
     formattedInput = quote(searchQuery)
-    #print('url: ', f'https://businesssearch.sos.ca.gov/CBS/SearchResults?filing=False&SearchType=CORP&SearchCriteria={formattedInput}&SearchSubType=Keyword') 
-    #TODO: Remove hard coded url 
-    response = browser.open(f'https://businesssearch.sos.ca.gov/CBS/SearchResults?filing=False&SearchType=CORP&SearchCriteria={formattedInput}&SearchSubType=Keyword')
-    html = response.read() # TODO: FIND OUT WHY THIS WORKS!!!!
-    #print(html)
-    soup = BeautifulSoup(html, 'html.parser')  
+    link = f'http://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchNameOrder={formattedInput.upper()}&searchTerm={formattedInput}'
+    html = requests.get(link).text
+    soup = BeautifulSoup(html, 'html.parser')
     tags = soup.find_all('td')
-    activeBusinesses = []  
-    #print(tags)
+    activeBusinesses = []
+ 
+    '''
+    Look for a match in each <td> element, if a match is found on index i then
+    the <td> element that describes the business' status is found on index i +
+    2. 
 
+    This is a pretty basic approach to the problem but most of this is hacked
+    af, needs review!
+    '''
+    # Find all active business entities...
+    # TODO: MAKE THIS READABLE!!!! WTF!!!!
     for index, tag in enumerate(tags):
-        # Get the string content from the html tag...
-        tagString = str(tag.string).lstrip() if tag.string != None else ""
-        
-        #NOTE: len() on a list is an O(1) operation... 
-        if(len(activeBusinesses) < MAX_SIZE and re.search('Active', tagString, re.I)):
-            activeBusinesses.append(tags[index + 1]['data-order'])
-
-            #print(tags[index + 1]['data-order'])
-                 
+        if(tag.find('a')): 
+            # TODO: CHECK FOR OUT OF BOUNDS YOU DICK!
+            #if(re.match(formattedInput, str(tag.find('a').string), re.I) and re.match('Active', str(tags[index + 2].string))):
+            if(re.match('Active', str(tags[index + 2].string))):
+                activeBusinesses.append(tag.find('a').string)
+             
     return activeBusinesses
 
-def main(args):
-    results = searchState(args.searchQuery)
 
+'''
+Return a list of results, let user
+choose from list in frontend.
+'''
+def main(args):
+    results = searchSunBiz(args.businessName)
+    
     # Output results
     if(args.json):
         print(json.dumps({'data' : results}, sort_keys=True,
                          indent=4, separators=(',', ': ')))
     else:
-        print(f'Found {len(results)} active businesses while searching for {args.searchQuery}')
+        print(f'Found {len(results)} active businesses while searching for {args.businessName}')
         print("--------- Results ---------")
         for result in results:
             print(result)
     
-    # TODO: Return results in JSON or as a python list
+    # Return results in JSON or as a python list
     return json.dumps({'data' : results}, sort_keys=True,
                         indent=None, separators=(',', ': '))
-   
- 
+
+# Parse command line arguments and search sunbiz.org    
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Searches for an active business entity on https://businesssearch.sos.ca.gov/ by \'scraping\' the website.')
-    parser.add_argument("searchQuery", help='The name of the business to search for.')
+    parser = argparse.ArgumentParser(description='Searches for an active business entity on search.sunbiz.org by \'scraping\' the website.')
+    parser.add_argument("businessName", help='The name of the business to search for.') 
     parser.add_argument("-j", "--json",  help='Print results in JSON', action='store_true')
     args = parser.parse_args()
     main(args)
-
-
-
