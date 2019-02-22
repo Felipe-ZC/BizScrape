@@ -41,7 +41,7 @@ def main(args):
 
     # Output results
     if(args.json):
-        print(json.dumps({'data' : results}, sort_keys=True,
+        print(json.dumps({'data' : results, 'state' : 'California'}, sort_keys=True,
                          indent=4, separators=(',', ': ')))
     else:
         print(f'Found {len(results)} active businesses while searching for {args.searchQuery}')
@@ -50,7 +50,7 @@ def main(args):
             print(result)
     
     # TODO: Return results in JSON or as a python list
-    return json.dumps({'data' : results}, sort_keys=True,
+    return json.dumps({'data' : results, 'state' : 'California'}, sort_keys=True,
                         indent=None, separators=(',', ': '))
    
  
