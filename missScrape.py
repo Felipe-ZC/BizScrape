@@ -11,12 +11,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC 
+from selenium.common.exceptions import TimeoutException
 import time
 
-MAX_SIZE = 5
-#TODO MUST BE REFACTORED!
-#TODO DON'T turn this in without refactoring! 
-#TODO Merge with Florida search
 def searchState(searchQuery):
     # Start selenium...
     driver = webdriver.Chrome();
@@ -62,7 +59,7 @@ def main(args):
             print(result)
     
     # TODO: Return results in JSON or as a python list
-    return json.dumps({'data' : results, 'state' : 'Michigan'}, sort_keys=True,
+    return json.dumps({'data' : results, 'state' : 'Mississippi'}, sort_keys=True,
                         indent=None, separators=(',', ': '))
    
  
